@@ -7,8 +7,11 @@
 //
 
 #import "ViewController.h"
+#import "GLSLView.h"
 
 @interface ViewController ()
+
+@property (nonatomic, strong) GLSLView *myView;
 
 @end
 
@@ -17,7 +20,13 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    
+    self.myView = (GLSLView *)self.view;
 }
 
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    
+}
 
 @end

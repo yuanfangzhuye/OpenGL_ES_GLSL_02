@@ -14,6 +14,11 @@
 		F23522AD24D7FEBE00DC1A5C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F23522AC24D7FEBE00DC1A5C /* Assets.xcassets */; };
 		F23522B024D7FEBE00DC1A5C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F23522AE24D7FEBE00DC1A5C /* LaunchScreen.storyboard */; };
 		F23522B324D7FEBE00DC1A5C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = F23522B224D7FEBE00DC1A5C /* main.m */; };
+		F23522C024D7FF9900DC1A5C /* GLESUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = F23522BA24D7FF9900DC1A5C /* GLESUtils.m */; };
+		F23522C124D7FF9900DC1A5C /* GLESMath.c in Sources */ = {isa = PBXBuildFile; fileRef = F23522BC24D7FF9900DC1A5C /* GLESMath.c */; };
+		F23522C324D7FFC400DC1A5C /* shaderv.glsl in Resources */ = {isa = PBXBuildFile; fileRef = F23522C224D7FFC400DC1A5C /* shaderv.glsl */; };
+		F23522C524D7FFD500DC1A5C /* shaderf.glsl in Resources */ = {isa = PBXBuildFile; fileRef = F23522C424D7FFD500DC1A5C /* shaderf.glsl */; };
+		F23522C824D8002C00DC1A5C /* GLSLView.m in Sources */ = {isa = PBXBuildFile; fileRef = F23522C724D8002C00DC1A5C /* GLSLView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,6 +34,16 @@
 		F23522AF24D7FEBE00DC1A5C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		F23522B124D7FEBE00DC1A5C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F23522B224D7FEBE00DC1A5C /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		F23522BA24D7FF9900DC1A5C /* GLESUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLESUtils.m; sourceTree = "<group>"; };
+		F23522BB24D7FF9900DC1A5C /* Quaternion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Quaternion.h; sourceTree = "<group>"; };
+		F23522BC24D7FF9900DC1A5C /* GLESMath.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = GLESMath.c; sourceTree = "<group>"; };
+		F23522BD24D7FF9900DC1A5C /* GLESUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLESUtils.h; sourceTree = "<group>"; };
+		F23522BE24D7FF9900DC1A5C /* Vector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Vector.h; sourceTree = "<group>"; };
+		F23522BF24D7FF9900DC1A5C /* GLESMath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLESMath.h; sourceTree = "<group>"; };
+		F23522C224D7FFC400DC1A5C /* shaderv.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; path = shaderv.glsl; sourceTree = "<group>"; };
+		F23522C424D7FFD500DC1A5C /* shaderf.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; path = shaderf.glsl; sourceTree = "<group>"; };
+		F23522C624D8002C00DC1A5C /* GLSLView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GLSLView.h; sourceTree = "<group>"; };
+		F23522C724D8002C00DC1A5C /* GLSLView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GLSLView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,12 +76,17 @@
 		F235229F24D7FEBC00DC1A5C /* OpenGL_ES_GLSL_02 */ = {
 			isa = PBXGroup;
 			children = (
+				F23522B924D7FF9900DC1A5C /* Utils */,
 				F23522A024D7FEBC00DC1A5C /* AppDelegate.h */,
 				F23522A124D7FEBC00DC1A5C /* AppDelegate.m */,
 				F23522A324D7FEBC00DC1A5C /* SceneDelegate.h */,
 				F23522A424D7FEBC00DC1A5C /* SceneDelegate.m */,
 				F23522A624D7FEBC00DC1A5C /* ViewController.h */,
 				F23522A724D7FEBC00DC1A5C /* ViewController.m */,
+				F23522C624D8002C00DC1A5C /* GLSLView.h */,
+				F23522C724D8002C00DC1A5C /* GLSLView.m */,
+				F23522C224D7FFC400DC1A5C /* shaderv.glsl */,
+				F23522C424D7FFD500DC1A5C /* shaderf.glsl */,
 				F23522A924D7FEBC00DC1A5C /* Main.storyboard */,
 				F23522AC24D7FEBE00DC1A5C /* Assets.xcassets */,
 				F23522AE24D7FEBE00DC1A5C /* LaunchScreen.storyboard */,
@@ -74,6 +94,19 @@
 				F23522B224D7FEBE00DC1A5C /* main.m */,
 			);
 			path = OpenGL_ES_GLSL_02;
+			sourceTree = "<group>";
+		};
+		F23522B924D7FF9900DC1A5C /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				F23522BA24D7FF9900DC1A5C /* GLESUtils.m */,
+				F23522BB24D7FF9900DC1A5C /* Quaternion.h */,
+				F23522BC24D7FF9900DC1A5C /* GLESMath.c */,
+				F23522BD24D7FF9900DC1A5C /* GLESUtils.h */,
+				F23522BE24D7FF9900DC1A5C /* Vector.h */,
+				F23522BF24D7FF9900DC1A5C /* GLESMath.h */,
+			);
+			path = Utils;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -134,8 +167,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				F23522B024D7FEBE00DC1A5C /* LaunchScreen.storyboard in Resources */,
+				F23522C324D7FFC400DC1A5C /* shaderv.glsl in Resources */,
 				F23522AD24D7FEBE00DC1A5C /* Assets.xcassets in Resources */,
 				F23522AB24D7FEBC00DC1A5C /* Main.storyboard in Resources */,
+				F23522C524D7FFD500DC1A5C /* shaderf.glsl in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -148,8 +183,11 @@
 			files = (
 				F23522A824D7FEBC00DC1A5C /* ViewController.m in Sources */,
 				F23522A224D7FEBC00DC1A5C /* AppDelegate.m in Sources */,
+				F23522C024D7FF9900DC1A5C /* GLESUtils.m in Sources */,
 				F23522B324D7FEBE00DC1A5C /* main.m in Sources */,
+				F23522C124D7FF9900DC1A5C /* GLESMath.c in Sources */,
 				F23522A524D7FEBC00DC1A5C /* SceneDelegate.m in Sources */,
+				F23522C824D8002C00DC1A5C /* GLSLView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
