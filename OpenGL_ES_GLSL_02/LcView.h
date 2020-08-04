@@ -1,5 +1,5 @@
 //
-//  GLSLView.h
+//  LcView.h
 //  OpenGL_ES_GLSL_02
 //
 //  Created by tlab on 2020/8/3.
@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface GLSLView : UIView
+@interface LcView : UIView
 
 @end
 

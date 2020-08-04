@@ -1,17 +1,17 @@
 //
-//  GLSLView.m
+//  LcView.m
 //  OpenGL_ES_GLSL_02
 //
 //  Created by tlab on 2020/8/3.
 //  Copyright © 2020 yuanfangzhuye. All rights reserved.
 //
 
-#import "GLSLView.h"
+#import "LcView.h"
 #import "GLESMath.h"
 #import "GLESUtils.h"
 #import <OpenGLES/ES2/gl.h>
 
-@interface GLSLView ()
+@interface LcView ()
 
 @property (nonatomic, strong) CAEAGLLayer *myEagLayer;
 @property (nonatomic, strong) EAGLContext *myContext;
@@ -24,7 +24,7 @@
 
 @end
 
-@implementation GLSLView
+@implementation LcView
 {
     float xDegree;
     float yDegree;
@@ -182,14 +182,14 @@
     
     GLuint position = glGetAttribLocation(self.myProgram, "position");
     glEnableVertexAttribArray(position);
-    glVertexAttribPointer(position, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 6, NULL);
+    glVertexAttribPointer(position, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 6, (GLfloat *)NULL);
     
     GLuint positionColor = glGetAttribLocation(self.myProgram, "positionColor");
     glEnableVertexAttribArray(positionColor);
-    glVertexAttribPointer(positionColor, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 6, (float *)NULL + 3);
+    glVertexAttribPointer(positionColor, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 6, (GLfloat *)NULL + 3);
     
-    GLuint projectionMatrixSlot = glGetAttribLocation(self.myProgram, "projectionMax");
-    GLuint modelViewMatrixSlot = glGetAttribLocation(self.myProgram, "modelviewMax");
+    GLuint projectionMatrixSlot = glGetAttribLocation(self.myProgram, "projectionMatrix");
+    GLuint modelViewMatrixSlot = glGetAttribLocation(self.myProgram, "modelViewMatrix");
     
     float width = self.frame.size.width;
     float height = self.frame.size.height;
@@ -242,7 +242,7 @@
 - (void)compileShader:(GLuint *)shader type:(GLenum)type file:(NSString *)file
 {
     NSString *content = [NSString stringWithContentsOfFile:file encoding:NSUTF8StringEncoding error:nil];
-    const GLchar *source = [content UTF8String];
+    const GLchar *source = (GLchar *)[content UTF8String];
     
     *shader = glCreateShader(type);
     

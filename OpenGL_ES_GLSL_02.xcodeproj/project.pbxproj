@@ -18,7 +18,7 @@
 		F23522C124D7FF9900DC1A5C /* GLESMath.c in Sources */ = {isa = PBXBuildFile; fileRef = F23522BC24D7FF9900DC1A5C /* GLESMath.c */; };
 		F23522C324D7FFC400DC1A5C /* shaderv.glsl in Resources */ = {isa = PBXBuildFile; fileRef = F23522C224D7FFC400DC1A5C /* shaderv.glsl */; };
 		F23522C524D7FFD500DC1A5C /* shaderf.glsl in Resources */ = {isa = PBXBuildFile; fileRef = F23522C424D7FFD500DC1A5C /* shaderf.glsl */; };
-		F23522C824D8002C00DC1A5C /* GLSLView.m in Sources */ = {isa = PBXBuildFile; fileRef = F23522C724D8002C00DC1A5C /* GLSLView.m */; };
+		F23522C824D8002C00DC1A5C /* LcView.m in Sources */ = {isa = PBXBuildFile; fileRef = F23522C724D8002C00DC1A5C /* LcView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -42,8 +42,8 @@
 		F23522BF24D7FF9900DC1A5C /* GLESMath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLESMath.h; sourceTree = "<group>"; };
 		F23522C224D7FFC400DC1A5C /* shaderv.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; path = shaderv.glsl; sourceTree = "<group>"; };
 		F23522C424D7FFD500DC1A5C /* shaderf.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; path = shaderf.glsl; sourceTree = "<group>"; };
-		F23522C624D8002C00DC1A5C /* GLSLView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GLSLView.h; sourceTree = "<group>"; };
-		F23522C724D8002C00DC1A5C /* GLSLView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GLSLView.m; sourceTree = "<group>"; };
+		F23522C624D8002C00DC1A5C /* LcView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LcView.h; sourceTree = "<group>"; };
+		F23522C724D8002C00DC1A5C /* LcView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LcView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,8 +83,8 @@
 				F23522A424D7FEBC00DC1A5C /* SceneDelegate.m */,
 				F23522A624D7FEBC00DC1A5C /* ViewController.h */,
 				F23522A724D7FEBC00DC1A5C /* ViewController.m */,
-				F23522C624D8002C00DC1A5C /* GLSLView.h */,
-				F23522C724D8002C00DC1A5C /* GLSLView.m */,
+				F23522C624D8002C00DC1A5C /* LcView.h */,
+				F23522C724D8002C00DC1A5C /* LcView.m */,
 				F23522C224D7FFC400DC1A5C /* shaderv.glsl */,
 				F23522C424D7FFD500DC1A5C /* shaderf.glsl */,
 				F23522A924D7FEBC00DC1A5C /* Main.storyboard */,
@@ -187,7 +187,7 @@
 				F23522B324D7FEBE00DC1A5C /* main.m in Sources */,
 				F23522C124D7FF9900DC1A5C /* GLESMath.c in Sources */,
 				F23522A524D7FEBC00DC1A5C /* SceneDelegate.m in Sources */,
-				F23522C824D8002C00DC1A5C /* GLSLView.m in Sources */,
+				F23522C824D8002C00DC1A5C /* LcView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
