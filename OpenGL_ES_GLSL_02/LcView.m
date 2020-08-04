@@ -42,14 +42,26 @@
 
 - (void)layoutSubviews
 {
+    //1.设置图层
     [self setupLayer];
+    
+    //2.设置上下文
     [self setupContext];
+    
+    //3.清空缓存区
     [self deleteRenderAndFrameBuffer];
+    
+    //4.设置renderBuffer
     [self setupRenderBuffer];
+    
+    //5.设置frameBuffer
     [self setupFrameBuffer];
+    
+    //6.绘制
     [self render];
 }
 
+//1.设置图层
 - (void)setupLayer
 {
     self.myEagLayer = (CAEAGLLayer *)self.layer;
@@ -58,6 +70,7 @@
     self.myEagLayer.drawableProperties = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:NO], kEAGLDrawablePropertyRetainedBacking, kEAGLColorFormatRGBA8, kEAGLDrawablePropertyColorFormat, nil];
 }
 
+//2.设置上下文
 - (void)setupContext
 {
     EAGLContext *context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
@@ -73,6 +86,7 @@
     self.myContext = context;
 }
 
+//3.清空缓存区
 - (void)deleteRenderAndFrameBuffer
 {
     glDeleteBuffers(1, &_myColorRenderBuffer);
@@ -82,59 +96,85 @@
     _myColorFrameBuffer = 0;
 }
 
+//4.设置renderBuffer
 - (void)setupRenderBuffer
 {
+    //1.定义一个缓存区
     GLuint buffer;
+    //2.申请一个缓存区标志
     glGenRenderbuffers(1, &buffer);
     
+    //3.
     self.myColorRenderBuffer = buffer;
     
+    //4.将标识符绑定到GL_RENDERBUFFER
     glBindRenderbuffer(GL_RENDERBUFFER, self.myColorRenderBuffer);
     [self.myContext renderbufferStorage:GL_RENDERBUFFER fromDrawable:self.myEagLayer];
 }
 
+//5.设置frameBuffer
 - (void)setupFrameBuffer
 {
+    //1.定义一个缓存区
     GLuint buffer;
+    
+    //2.申请一个缓存区标志
     glGenFramebuffers(1, &buffer);
     
+    //3.
     self.myColorFrameBuffer = buffer;
     
+    //4.设置当前的framebuffer
     glBindFramebuffer(GL_FRAMEBUFFER, self.myColorFrameBuffer);
+    
+    //5.将_myColorRenderBuffer 装配到GL_COLOR_ATTACHMENT0 附着点上
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, self.myColorRenderBuffer);
 }
 
 - (void)render
 {
+    
+    //1.初始化
     [self setupRC];
+    
+    //2.着色器程序
     [self setupProgram];
+    
+    //3.处理顶点数据
     [self setupVertexs];
 }
 
 - (void)setupRC
 {
+    //1.清屏颜色
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
     
     CGFloat scale = [[UIScreen mainScreen] scale];
     
+    //2.设置视口
     glViewport(self.frame.origin.x * scale, self.frame.origin.y * scale, self.frame.size.width * scale, self.frame.size.height * scale);
 }
 
 - (void)setupProgram
 {
+    //1.获取顶点着色程序、片元着色器程序文件位置
     NSString *vertFile = [[NSBundle mainBundle] pathForResource:@"shaderv" ofType:@"glsl"];
     NSString *fragFile = [[NSBundle mainBundle] pathForResource:@"shaderf" ofType:@"glsl"];
     
+    //2.判断self.myProgram是否存在，存在则清空其文件
     if (self.myProgram) {
         glDeleteProgram(self.myProgram);
         self.myProgram = 0;
     }
     
+    //3.加载程序到myProgram中来
     self.myProgram = [self loadShader:vertFile frag:fragFile];
     
+    //4.链接
     glLinkProgram(self.myProgram);
     
+    //5.获取链接状态
     GLint linkStatus;
     glGetProgramiv(self.myProgram, GL_LINK_STATUS, &linkStatus);
     if (linkStatus == GL_FALSE) {
@@ -173,50 +213,154 @@
         1, 4, 3,
     };
     
+    //(3).判断顶点缓存区是否为空，如果为空则申请一个缓存区标识符
     if (self.myVertices == 0) {
         glGenBuffers(1, &_myVertices);
     }
     
+    //2.-----处理顶点数据-------
+    //(1).将_myVertices绑定到GL_ARRAY_BUFFER标识符上
     glBindBuffer(GL_ARRAY_BUFFER, _myVertices);
+    //(2).把顶点数据从CPU内存复制到GPU上
     glBufferData(GL_ARRAY_BUFFER, sizeof(attrArr), attrArr, GL_DYNAMIC_DRAW);
     
+    //(3).将顶点数据通过myPrograme中的传递到顶点着色程序的position
+    //1.glGetAttribLocation,用来获取vertex attribute的入口的.
+    //2.告诉OpenGL ES,通过glEnableVertexAttribArray，
+    //3.最后数据是通过glVertexAttribPointer传递过去的。
+    //注意：第二参数字符串必须和shaderv.vsh中的输入变量：position保持一致
     GLuint position = glGetAttribLocation(self.myProgram, "position");
+    
+    //(4).打开position
     glEnableVertexAttribArray(position);
+    
+    //(5).设置读取方式
+    //参数1：index,顶点数据的索引
+    //参数2：size,每个顶点属性的组件数量，1，2，3，或者4.默认初始值是4.
+    //参数3：type,数据中的每个组件的类型，常用的有GL_FLOAT,GL_BYTE,GL_SHORT。默认初始值为GL_FLOAT
+    //参数4：normalized,固定点数据值是否应该归一化，或者直接转换为固定值。（GL_FALSE）
+    //参数5：stride,连续顶点属性之间的偏移量，默认为0；
+    //参数6：指定一个指针，指向数组中的第一个顶点属性的第一个组件。默认为0
     glVertexAttribPointer(position, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 6, (GLfloat *)NULL);
     
+    //3.--------处理顶点颜色值-------
+    //(1).glGetAttribLocation,用来获取vertex attribute的入口的.
+    //注意：第二参数字符串必须和shaderv.glsl中的输入变量：positionColor保持一致
     GLuint positionColor = glGetAttribLocation(self.myProgram, "positionColor");
+    
+    //(2).设置合适的格式从buffer里面读取数据
     glEnableVertexAttribArray(positionColor);
+    
+    //(3).设置读取方式
+    //参数1：index,顶点数据的索引
+    //参数2：size,每个顶点属性的组件数量，1，2，3，或者4.默认初始值是4.
+    //参数3：type,数据中的每个组件的类型，常用的有GL_FLOAT,GL_BYTE,GL_SHORT。默认初始值为GL_FLOAT
+    //参数4：normalized,固定点数据值是否应该归一化，或者直接转换为固定值。（GL_FALSE）
+    //参数5：stride,连续顶点属性之间的偏移量，默认为0；
+    //参数6：指定一个指针，指向数组中的第一个顶点属性的第一个组件。默认为0
     glVertexAttribPointer(positionColor, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 6, (GLfloat *)NULL + 3);
     
-    GLuint projectionMatrixSlot = glGetAttribLocation(self.myProgram, "projectionMatrix");
-    GLuint modelViewMatrixSlot = glGetAttribLocation(self.myProgram, "modelViewMatrix");
+    //4.找到myProgram中的projectionMatrix、modelViewMatrix 2个矩阵的地址。如果找到则返回地址，否则返回-1，表示没有找到2个对象
+    GLuint projectionMatrixSlot = glGetUniformLocation(self.myProgram, "projectionMatrix");
+    GLuint modelViewMatrixSlot = glGetUniformLocation(self.myProgram, "modelViewMatrix");
     
     float width = self.frame.size.width;
     float height = self.frame.size.height;
     
+    //5.创建4 * 4投影矩阵
     KSMatrix4 _projectionMatrix;
+    
+    //(1)获取单元矩阵
     ksMatrixLoadIdentity(&_projectionMatrix);
     
+    //(2)计算纵横比例 = 长/宽
     float aspect = width / height;
+    
+    //(3)获取透视矩阵
+    /*
+     参数1：矩阵
+     参数2：视角，度数为单位
+     参数3：纵横比
+     参数4：近平面距离
+     参数5：远平面距离
+     参考PPT
+     */
     ksPerspective(&_projectionMatrix, 30.0f, aspect, 5.0f, 20.0f);
+    
+    //(4)将投影矩阵传递到顶点着色器
+    /*
+     void glUniformMatrix4fv(GLint location,  GLsizei count,  GLboolean transpose,  const GLfloat *value);
+     参数列表：
+     location:指要更改的uniform变量的位置
+     count:更改矩阵的个数
+     transpose:是否要转置矩阵，并将它作为uniform变量的值。必须为GL_FALSE
+     value:执行count个元素的指针，用来更新指定uniform变量
+     */
     glUniformMatrix4fv(projectionMatrixSlot, 1, GL_FALSE, (GLfloat *)&_projectionMatrix.m[0][0]);
     
+    //6.创建一个4 * 4 模型视图矩阵
     KSMatrix4 _modelViewMatrix;
+    
+    //(1)获取单元矩阵
     ksMatrixLoadIdentity(&_modelViewMatrix);
+    
+    //(2)平移，z轴平移-10
     ksTranslate(&_modelViewMatrix, 0.0f, 0.0f, -10.0f);
     
+    //(3)创建一个4 * 4 旋转矩阵
     KSMatrix4 _rotationMatrix;
-    ksMatrixLoadIdentity(&_rotationMatrix);
-    ksRotate(&_rotationMatrix, xDegree, 1.0f, 0.0f, 0.0f);
-    ksRotate(&_rotationMatrix, yDegree, 0.0f, 1.0f, 0.0f);
-    ksRotate(&_rotationMatrix, zDegree, 0.0f, 0.0f, 1.0f);
     
+    //(4)初始化为单元矩阵
+    ksMatrixLoadIdentity(&_rotationMatrix);
+    
+    //(5)旋转
+    ksRotate(&_rotationMatrix, xDegree, 1.0f, 0.0f, 0.0f);//绕X轴
+    ksRotate(&_rotationMatrix, yDegree, 0.0f, 1.0f, 0.0f);//绕Y轴
+    ksRotate(&_rotationMatrix, zDegree, 0.0f, 0.0f, 1.0f);//绕Z轴
+    
+    //(6)把变换矩阵相乘.将_modelViewMatrix矩阵与_rotationMatrix矩阵相乘，结合到模型视图
     ksMatrixMultiply(&_modelViewMatrix, &_rotationMatrix, &_modelViewMatrix);
+    
+    //(7)将模型视图矩阵传递到顶点着色器
+    /*
+     void glUniformMatrix4fv(GLint location,  GLsizei count,  GLboolean transpose,  const GLfloat *value);
+     参数列表：
+     location:指要更改的uniform变量的位置
+     count:更改矩阵的个数
+     transpose:是否要转置矩阵，并将它作为uniform变量的值。必须为GL_FALSE
+     value:执行count个元素的指针，用来更新指定uniform变量
+     */
     glUniformMatrix4fv(modelViewMatrixSlot, 1, GL_FALSE, (GLfloat *)&_modelViewMatrix.m[0][0]);
     
+    //7.开启剔除操作效果
     glEnable(GL_CULL_FACE);
     
+    //8.使用索引绘图
+    /*
+     void glDrawElements(GLenum mode,GLsizei count,GLenum type,const GLvoid * indices);
+     参数列表：
+     mode:要呈现的画图的模型
+                GL_POINTS
+                GL_LINES
+                GL_LINE_LOOP
+                GL_LINE_STRIP
+                GL_TRIANGLES
+                GL_TRIANGLE_STRIP
+                GL_TRIANGLE_FAN
+     count:绘图个数
+     type:类型
+             GL_BYTE
+             GL_UNSIGNED_BYTE
+             GL_SHORT
+             GL_UNSIGNED_SHORT
+             GL_INT
+             GL_UNSIGNED_INT
+     indices：绘制索引数组
+
+     */
     glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(indices[0]), GL_UNSIGNED_INT, indices);
+    
+    //9.要求本地窗口系统显示OpenGL ES渲染<目标>
     [self.myContext presentRenderbuffer:GL_RENDERBUFFER];
 }
 
@@ -224,30 +368,55 @@
 
 - (GLuint)loadShader:(NSString *)vert frag:(NSString *)frag
 {
+    //创建2个临时的变量
     GLuint vertShader, fragShader;
+    
+    //创建一个Program
     GLuint program = glCreateProgram();
     
+    //编译文件
+    //编译顶点着色程序、片元着色器程序
+    /**
+     参数1：编译完存储的底层地址
+     参数2：编译的类型，GL_VERTEX_SHADER（顶点）、GL_FRAGMENT_SHADER(片元)
+     参数3：文件路径
+     */
     [self compileShader:&vertShader type:GL_VERTEX_SHADER file:vert];
     [self compileShader:&fragShader type:GL_FRAGMENT_SHADER file:frag];
     
+    //创建最终的程序
     glAttachShader(program, vertShader);
     glAttachShader(program, fragShader);
     
+    //释放不需要的shader
     glDeleteShader(vertShader);
     glDeleteShader(fragShader);
     
     return program;
 }
 
+//链接shader
 - (void)compileShader:(GLuint *)shader type:(GLenum)type file:(NSString *)file
 {
+    //读取文件路径字符串
     NSString *content = [NSString stringWithContentsOfFile:file encoding:NSUTF8StringEncoding error:nil];
+    
+    //获取文件路径字符串，C语言字符串
     const GLchar *source = (GLchar *)[content UTF8String];
     
+    //创建一个shader（根据type类型）
     *shader = glCreateShader(type);
     
+    //将顶点着色器源码附加到着色器对象上。
+    /**
+     参数1：shader,要编译的着色器对象 *shader
+     参数2：numOfStrings,传递的源码字符串数量 1个
+     参数3：strings,着色器程序的源码（真正的着色器程序源码）
+     参数4：lenOfStrings,长度，具有每个字符串长度的数组，或NULL，这意味着字符串是NULL终止的
+     */
     glShaderSource(*shader, 1, &source, NULL);
     
+    //把着色器源代码编译成目标代码
     glCompileShader(*shader);
 }
 
@@ -256,6 +425,7 @@
         myTimer = [NSTimer scheduledTimerWithTimeInterval:0.05f target:self selector:@selector(reDegree) userInfo:nil repeats:YES];
     }
     
+    //更新X
     bX = !bX;
 }
 - (IBAction)yBtnClick:(id)sender {
@@ -263,6 +433,7 @@
         myTimer = [NSTimer scheduledTimerWithTimeInterval:0.05f target:self selector:@selector(reDegree) userInfo:nil repeats:YES];
     }
     
+    //更新Y
     bY = !bY;
 }
 - (IBAction)zBtnClick:(id)sender {
@@ -270,14 +441,18 @@
         myTimer = [NSTimer scheduledTimerWithTimeInterval:0.05f target:self selector:@selector(reDegree) userInfo:nil repeats:YES];
     }
     
+    //更新Z
     bZ = !bZ;
 }
 
 - (void)reDegree
 {
+    //更新度数
     xDegree += bX * 5;
     yDegree += bY * 5;
     zDegree += bZ * 5;
+    
+    //重新渲染
     [self render];
 }
 
